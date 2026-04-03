@@ -1,1 +1,52 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Document</title>\n    <script>\n        // Countdown timer configuration\n        const expirationDate = new Date('2026-04-06T23:59:59Z').getTime();\n        const countdownDisplay = document.getElementById('countdown-timer');\n        const timer = setInterval(() => {\n            const now = new Date().getTime();\n            const distance = expirationDate - now;\n\n            // Calculate days, hours, minutes, and seconds\n            const days = Math.floor(distance / (1000 * 60 * 60 * 24));\n            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));\n            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));\n            const seconds = Math.floor((distance % (1000 * 60)) / 1000);\n\n            // Display the result in the countdown element\n            countdownDisplay.innerHTML = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';\n\n            // If the countdown is over, display a message and block access\n            if (distance < 0) {\n                clearInterval(timer);\n                document.body.innerHTML = '<h1>Access Blocked</h1>';\n            }\n        }, 1000);\n    </script>\n</head>\n<body>\n    <h1>Welcome to Naomi's Citadel Monthly - April Edition</h1>\n    <p id="countdown-timer"></p>\n    <a href="path-to-pdf.pdf" download="Your-Document.pdf">Download PDF</a>\n    <div>\n        <button onclick="shareContent()">Share</button>\n    </div>\n    <script>\n        function shareContent() {\n            // Implement sharing functionality here\n            alert('Sharing feature coming soon!');\n        }\n    </script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Naomi Reading</title>
+    <style>
+        body { background: black; color: white; font-family: Arial, sans-serif; }
+        .starfield { position: absolute; width: 100%; height: 100%; background: url(starfield.png); animation: starfield 50s linear infinite; }
+        @keyframes starfield { from { background-position: 0 0; } to { background-position: 100% 100%; } }
+        #countdown { font-size: 2rem; } /* Additional styles can go here */
+    </style>
+</head>
+<body>
+    <div class="starfield"></div>
+    <nav>
+        <ul>
+            <li><a href="#lenormand">Lenormand</a></li>
+            <li><a href="#kipper">Kipper</a></li>
+            <li><a href="#tarot">Tarot & Oracle</a></li>
+            <li><a href="#synthesis">Synthesis</a></li>
+        </ul>
+    </nav>
+    <div id="lenormand"> <!-- Content for Lenormand --> </div>
+    <div id="kipper"> <!-- Content for Kipper --> </div>
+    <div id="tarot"> <!-- Content for Tarot & Oracle --> </div>
+    <div id="synthesis"> <!-- Content for Synthesis --> </div>
+    <div id="countdown">Countdown: <span id="timer"></span></div>
+    <button id="saveShareBtn">Save/Share</button>
+    <script>
+        // Countdown Timer
+        const countdownDate = new Date('2026-04-06T23:59:59Z').getTime();
+        const timerElement = document.getElementById('timer');
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            timerElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            if (distance < 0) {
+                clearInterval(x);
+                timerElement.innerHTML = 'EXPIRED';
+            }
+        }, 1000);
+
+        // Zoom functionality and save/share button behavior can be implemented here.
+    </script>
+</body>
+</html>
