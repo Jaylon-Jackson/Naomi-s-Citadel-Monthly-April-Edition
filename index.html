@@ -1,52 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Naomi Reading</title>
-    <style>
-        body { background: black; color: white; font-family: Arial, sans-serif; }
-        .starfield { position: absolute; width: 100%; height: 100%; background: url(starfield.png); animation: starfield 50s linear infinite; }
-        @keyframes starfield { from { background-position: 0 0; } to { background-position: 100% 100%; } }
-        #countdown { font-size: 2rem; } /* Additional styles can go here */
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Naomi's April Citadel Monthly Reading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #120e0c;
+      --bone: #f2e9d8;
+      --parchment: #d8cdbb;
+      --gold: #b99149;
+      --gold-light: #e2c178;
+      --line: rgba(226, 193, 120, 0.24);
+      --line-strong: rgba(226, 193, 120, 0.48);
+      --shadow: 0 20px 60px rgba(0,0,0,0.38);
+      --radius: 24px;
+      --radius-sm: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0f0b09 0%, var(--ink) 32%, #140f0d 100%);
+      color: var(--bone);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.06rem, 0.98rem + 0.25vw, 1.18rem);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      pointer-events: none;
+      z-index: -1;
+    }
+    .expiration-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(141,84,55,0.95), rgba(141,84,55,0.88));
+      border-bottom: 1px solid rgba(226,193,120,0.3);
+      padding: 0.75rem 1rem;
+      text-align: center;
+      color: var(--bone);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      z-index: 200;
+    }
+    .starfield {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 239, 212, 0.9);
+      box-shadow: 0 0 10px rgba(255, 225, 166, 0.45);
+      animation: twinkle var(--dur, 7s) ease-in-out infinite;
+      opacity: var(--op, 0.5);
+    }
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0.8); opacity: calc(var(--op, 0.5) * 0.55); }
+      50% { transform: scale(1.25); opacity: var(--op, 0.85); }
+    }
+    nav {
+      position: fixed;
+      top: 3rem;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(11,8,7,0.92), rgba(11,8,7,0.68));
+      border-bottom: 1px solid rgba(226,193,120,0.16);
+      backdrop-filter: blur(16px);
+      z-index: 100;
+    }
+    nav ul {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    nav a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--parchment);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      transition: all 200ms ease;
+    }
+    nav a:hover {
+      color: var(--bone);
+      background: rgba(242,233,216,0.04);
+      border: 1px solid rgba(226,193,120,0.26);
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      padding-top: calc(7rem + 2rem);
+    }
+    .section {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: clamp(3.5rem, 8vw, 6rem) 0;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.75rem;
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: 'Cinzel Decorative', Georgia, serif;
+      font-size: clamp(2.6rem, 1.3rem + 4vw, 5rem);
+      color: var(--bone);
+      margin: 0;
+      text-shadow: 0 0 24px rgba(226,193,120,0.14);
+    }
+    h2 {
+      font-family: 'Cinzel Decorative', Georgia, serif;
+      font-size: clamp(2rem, 1.3rem + 2vw, 3rem);
+      color: var(--bone);
+      margin: 0 0 1rem;
+    }
+    h3 {
+      font-family: 'Cinzel Decorative', Georgia, serif;
+      font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.9rem);
+      color: var(--bone);
+      margin: 0 0 1rem;
+    }
+    p { margin: 0 0 1rem; color: var(--parchment); }
+    .hero-meta {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.15rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      color: var(--parchment);
+      box-shadow: inset 0 0 24px rgba(226,193,120,0.06);
+      font-size: 0.9rem;
+    }
+    .card-block {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(1.4rem, 2vw, 2rem);
+      margin-bottom: 2rem;
+    }
+    .card-block::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(226,193,120,0.8), transparent);
+    }
+    .card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 1rem;
+      color: var(--parchment);
+    }
+    .card-list li {
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(226,193,120,0.1);
+    }
+    .card-list li:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bone);
+      border: 1px solid rgba(226,193,120,0.22);
+      border-radius: 999px;
+      padding: 0.5rem 0.8rem;
+      display: inline-block;
+      background: rgba(255,255,255,0.025);
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .save-banner {
+      background: linear-gradient(135deg, rgba(185,145,73,0.1), rgba(52,32,45,0.18)), rgba(255,255,255,0.025);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(1.4rem, 2vw, 2rem);
+      text-align: center;
+    }
+    .save-banner h2 { margin-bottom: 1rem; }
+    .save-btn {
+      min-height: 48px;
+      padding: 0.9rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--gold-light), var(--gold));
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(185,145,73,0.22);
+      font-size: 0.9rem;
+      transition: all 200ms ease;
+    }
+    .save-btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+    footer {
+      text-align: center;
+      color: var(--parchment);
+      font-size: 0.9rem;
+      padding: 2rem;
+      border-top: 1px solid var(--line);
+      margin-top: 3rem;
+    }
+    .expired-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18,14,12,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 400;
+    }
+    .expired-overlay.active {
+      display: flex;
+    }
+    .expired-content {
+      text-align: center;
+      max-width: 600px;
+      padding: 2rem;
+    }
+    .expired-content h1 {
+      font-size: clamp(2rem, 1.3rem + 2vw, 3rem);
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 759px) {
+      nav ul { padding: 0.75rem; gap: 0.5rem; }
+      nav a { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
+      main { padding-top: calc(5rem + 1rem); }
+    }
+  </style>
 </head>
 <body>
-    <div class="starfield"></div>
-    <nav>
-        <ul>
-            <li><a href="#lenormand">Lenormand</a></li>
-            <li><a href="#kipper">Kipper</a></li>
-            <li><a href="#tarot">Tarot & Oracle</a></li>
-            <li><a href="#synthesis">Synthesis</a></li>
-        </ul>
-    </nav>
-    <div id="lenormand"> <!-- Content for Lenormand --> </div>
-    <div id="kipper"> <!-- Content for Kipper --> </div>
-    <div id="tarot"> <!-- Content for Tarot & Oracle --> </div>
-    <div id="synthesis"> <!-- Content for Synthesis --> </div>
-    <div id="countdown">Countdown: <span id="timer"></span></div>
-    <button id="saveShareBtn">Save/Share</button>
-    <script>
-        // Countdown Timer
-        const countdownDate = new Date('2026-04-06T23:59:59Z').getTime();
-        const timerElement = document.getElementById('timer');
-        const x = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = countdownDate - now;
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            timerElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            if (distance < 0) {
-                clearInterval(x);
-                timerElement.innerHTML = 'EXPIRED';
-            }
-        }, 1000);
+  <div class="expiration-banner">
+    <span>This reading expires in: <strong id="countdown-timer">3d 0h 0m 0s</strong></span>
+  </div>
 
-        // Zoom functionality and save/share button behavior can be implemented here.
-    </script>
-</body>
-</html>
+  <div class="starfield" aria-hidden="true" id="starfield"></div>
+
+  <nav aria-label="Section navigation">
+    <ul>
+      <li><a href="#lenormand">Lenormand</a></li>
+      <li><a href="#kipper">Kipper</a></li>
+      <li><a href="#tarot">Tarot & Oracle</a></li>
+      <li><a href="#synthesis">Synthesis</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Your April Month-Ahead Reading</div>
+        <h1>Naomi</h1>
+        <p style="font-size: clamp(1.15rem, 1rem + 0.45vw, 1.4rem); color: var(--parchment); max-width: 30ch; margin: 1rem auto;">The Citadel Monthly · Four Deck Reading · April 2026</p>
+        <div class="hero-meta">April 2, 2026 · Prepared by Jaylon</div>
+      </div>
+    </section>
+
+    <section class="section" id="intro">
+      <div class="card-block">
+        <h2>Before We Begin</h2>
+        <p>This reading uses four separate decks, each pulled and read on their own before they are brought into conversation. The Lenormand and Kipper map the external reality of your month — the events, the people, the conditions, what is moving and what is not. The Tarot and Oracle speak to the inner landscape: what you are being asked to embody, what needs to be released, what your soul already knows about this season.</p>
+      </div>
+    </section>
+
+    <section class="section" id="lenormand">
+      <h2>I · The Lenormand</h2>
+      <p style="color: var(--parchment); margin-bottom: 2rem;">External Reality · The Month's Terrain</p>
+      
+      <div class="card-block">
+        <h3>The Witch's Tableau · 16 Cards</h3>
+        <ul class="card-list">
+          <li><strong>Q1 — Recent Past · Conscious:</strong> Fish · Birds · Clover · Dog</li>
+          <li><strong>Q2 — Recent Past · Hidden:</strong> Clouds · Crossroads · Moon · Fox</li>
+          <li><strong>Q3 — Near Future · Conscious:</strong> Ship · Tower · Woman · Stork</li>
+          <li><strong>Q4 — Near Future · Hidden:</strong> Stars · Bear · Sun · Scythe</li>
+        </ul>
+      </div>
+
+      <div class="card-block">
+        <h3>Q1 — Recent Past · Conscious</h3>
+        <p>Fish into Birds reads as financial conversation: money discussed, negotiated, worried over, and circulated rather than sitting in silent abundance. Clover and Dog then complete that conscious past with a brief but genuine lucky break alongside someone loyal and reliably present.</p>
+      </div>
+
+      <div class="card-block">
+        <h3>Q2 — Recent Past · Hidden</h3>
+        <p>Clouds into Crossroads shows confusion around a decision that has been developing below the surface. Fox is the sharpest signal here: strategy, self-protection, or an agenda that has not been consciously examined.</p>
+      </div>
+
+      <div class="card-block">
+        <h3>Q3 — Near Future · Conscious</h3>
+        <p>Ship moving into Tower says Naomi is already in motion toward something formal, structured, and institutionally significant. Woman and Stork make the near future clear: she and change are in direct dialogue.</p>
+      </div>
+
+      <div class="card-block">
+        <h3>Q4 — Near Future · Hidden</h3>
+        <p>Stars and Sun together create one of the strongest positive undercurrents: clarity, hope, success, and real brightness operating below the surface. Bear and Scythe show power and authority tied to a decisive cut that may not be consciously anticipated.</p>
+      </div>
+    </section>
+
+    <section class="section" id="kipper">
+      <h2>II · The Kipper</h2>
+      <p style="color: var(--parchment); margin-bottom: 2rem;">Directional Anchor · People & Positions</p>
+      
+      <div class="card-block">
+        <h3>Directional Box</h3>
+        <ul class="card-list">
+          <li><strong>Above:</strong> Parlour · High Honours · Rich Gent</li>
+          <li><strong>Center:</strong> Siren 2</li>
+          <li><strong>Below:</strong> Endings · Sorrows · Great Fortune</li>
+          <li><strong>Ahead / Left:</strong> Gift</li>
+          <li><strong>Behind / Right:</strong> Change</li>
+        </ul>
+      </div>
+
+      <div class="card-block">
+        <p>Siren 2 is Naomi's significator. High Honours is the conscious aspiration above her, Gift something already received or moving away, Change the thing she is actively facing into, and Sorrows the unconscious burden oriented toward Great Fortune.</p>
+        <p>Endings and Sorrows both funnel toward Great Fortune, which is one of the clearest structural promises in the entire month. The overall box is highly positive even while acknowledging grief and closure.</p>
+      </div>
+    </section>
+
+    <section class="section" id="tarot">
+      <h2>III · Tarot & Oracle</h2>
+      <p style="color: var(--parchment); margin-bottom: 2rem;">Inner Landscape · What Only You Can See</p>
+      
+      <div class="card-block">
+        <h3>Card Constellation</h3>
+        <ul class="card-list">
+          <li><strong>T1:</strong> Knight of Pentacles reversed</li>
+          <li><strong>T2:</strong> Temperance reversed</li>
+          <li><strong>O1:</strong> The Astronomer</li>
+          <li><strong>O2:</strong> The Patron reversed</li>
+          <li><strong>O3:</strong> The Waker reversed</li>
+        </ul>
+      </div>
+
+      <div class="card-block">
+        <h3>The Inner Message</h3>
+        <p>Knight of Pentacles reversed reads as grinding without reassessing — persistence turned into rut. Temperance reversed shows forced balance and overcorrection.</p>
+        <p>The Astronomer says intuition and discovery guide this month. The Patron reversed warns that a mentor-like figure may not give as much as promised. The Waker reversed insists the blind spot is inside, not outside.</p>
+        <p><strong>The month wants to hand Naomi something brighter than her current operating method knows how to receive.</strong></p>
+      </div>
+    </section>
+
+    <section class="section" id="synthesis">
+      <h2>IV · The Full Picture</h2>
+      <p style="color: var(--parchment); margin-bottom: 2rem;">All Four Layers Together</p>
+      
+      <div class="card-block">
+        <h3>What the External Map Says</h3>
+        <p>Externally, the reading is remarkably strong: High Honours above the significator, Great Fortune closing the Kipper, and Stars with Sun hidden in the future all point toward real advancement, clarity, and positive outcome.</p>
+      </div>
+
+      <div class="card-block">
+        <h3>What the Inner Map Says</h3>
+        <p>Internally, the cards show a mismatch between April's opportunity and Naomi's current method. Stop grinding and stop forcing balance. Intuition must outrank old logic. The real blind spot is inside rather than outside.</p>
+      </div>
+
+      <div class="card-block">
+        <h3>Convergence</h3>
+        <p><strong style="font-size: clamp(1.2rem, 1.08rem + 0.45vw, 1.45rem);">Naomi's month is not blocked. It is moving. But it asks her to stop forcing clarity from the outside and start listening for what her inner life already knows.</strong></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card-block">
+        <h2>A Note to You</h2>
+        <p>This month does not read as empty or stagnant. It reads as active, structured, and consequential. You are not being asked to do more of the same. What opens this month is honesty.</p>
+        <p>The beautiful thing in this spread is that the future is not weak. It is strong. But they do not remove the need for the cut. They tell you the cut is survivable and meaningful.</p>
+        <p>If something falls away this month, do not read that as proof you were abandoned by the path. Read it as the path clarifying itself.</p>
+        <p>— J</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="save-banner">
+        <h2>Keep this page before the month moves on</h2>
+        <p>Return to it whenever April reveals what these cards were already trying to say.</p>
+        <button class="save-btn" id="saveShareBtn">Download PDF / Share</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    This reading was prepared just for Naomi · The Citadel Monthly · April 2026 · Prepared by Jaylon
+  </footer>
+
+  <div class="expired-overlay" id="expiredOverlay">
+    <div class="expired-content">
+      <h1>Reading Expired</h1>
+      <p>This reading was available for 3 days and is no longer active.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    (function () {
+      // Create starfield
+      const starfield = document.getElementById('starfield');
+      const count = 72;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        const size = Math.random() * 2.2 + 0.6;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.setProperty('--op', (Math.random() * 0.55 + 0.2).toFixed(2));
+        star.style.setProperty('--dur', `${Math.random() * 6 + 4}s`);
+        star.style.animationDelay = `${Math.random() * 8}s`;
+        starfield.appendChild(star);
+      }
+
+      // Countdown timer
+      const expirationDate = new Date('2026-04-06T23:59:59Z').getTime();
+      const countdownDisplay = document.getElementById('countdown-timer');
+      const expiredOverlay = document.getElementById('expiredOverlay');
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = expirationDate - now;
+
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          expiredOverlay.classList.add('active');
+          document.querySelector('main').style.display = 'none';
+          document.querySelector('nav').style.display = 'none';
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownDisplay.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+
+      updateCountdown();
+      const countdownInterval = setInterval(updateCountdown, 1000);
+
+      // Save/Share button
+      document.getElementById('saveShareBtn').addEventListener('click', async () => {
+        const element = document.querySelector('main');
+        const opt = {
+          margin: 10,
+          filename: 'Naomi-April-2026-Reading.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        };
+
+        try {
+          await html2pdf().set(opt).from(element).save();
+        } catch (error) {
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: 'Naomi's April Citadel Monthly Reading',
+                text: 'The Citadel Monthly · Four Deck Reading · April 2026',
+                url: window.location.href
+              });
+            } catch (err) {
+              window.print*
+
