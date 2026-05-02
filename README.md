@@ -1,2 +1,3 @@
-# Naomi-s-Citadel-Monthly-April-Edition
-Naomi's April Month Ahead Spread
+# Naomi-Citadel-Readings
+Naomi's May Month Ahead Spread · May 2, 2026
+Tarot · Lenormand · Kipper · Oracle
